@@ -1,17 +1,29 @@
-#ifndef HUMAN_H
-#define HUMAN_H
+#ifndef OBJS_HUMAN_H
+#define OBJS_HUMAN_H
 
 #include <QThread>
-#include <shogi/shogi.h>
-#include "shogicomponent.h"
-#include <shogi/piece.h>
+#include <shogi.h>
 
+#include "shogicomponent.h"
+
+/**
+ * 指手管理オブジェクト
+ *
+ *
+ */
 class Human : public QThread
 {
     Q_OBJECT
 public:
+    /**
+     * 指手オブジェクトを生成する
+     *
+     * @param player 手番
+     * @param parent 親オブジェクト
+     */
     explicit Human(Shogi::Player player, QObject *parent = 0);
     virtual ~Human();
+
     void setShogiComponent(ShogiComponent *shogi_component);
 
 protected:
@@ -21,6 +33,14 @@ signals:
     void selectPiece(const Shogi::Piece &piece);
     
 public slots:
+    /**
+     * 座標の選択する
+     *
+     * 選択した座標に駒が自分の所有する駒が存在する場合は駒を選択する。
+     * 選択した駒の移動可能な座標を選択した場合は選択中の駒を指定の座標に移動する。
+     *
+     * @param point 移動座標
+     */
     virtual void selectionPoint(const Shogi::Point &point);
     
 protected:
@@ -40,4 +60,4 @@ protected:
     bool thinking;
 };
 
-#endif // HUMAN_H
+#endif // OBJS_HUMAN_H

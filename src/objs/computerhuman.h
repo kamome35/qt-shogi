@@ -1,5 +1,5 @@
-#ifndef COMPUTERHUMAN_H
-#define COMPUTERHUMAN_H
+#ifndef OBJS_COMPUTERHUMAN_H
+#define OBJS_COMPUTERHUMAN_H
 
 #include "human.h"
 
@@ -23,4 +23,4 @@ private:
     
 };
 
-#endif // COMPUTERHUMAN_H
+#endif // OBJS_COMPUTERHUMAN_H

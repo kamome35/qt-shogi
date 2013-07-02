@@ -6,9 +6,9 @@
 #include <QAction>
 #include <QMenuBar>
 
-#include <objs/computerhuman.h>
+#include <shogi.h>
+#include <objs.h>
 
-#include "shogi/csa.h"
 
 using namespace Shogi;
 
@@ -77,8 +77,8 @@ void MainWindow::setup()
     connect(board_view, SIGNAL(selectedBoardPoint(Shogi::Point)), gote, SLOT(selectionPoint(Shogi::Point)));
     connect(board_view, SIGNAL(selectedGoteHandPoint(Shogi::Point)), gote, SLOT(selectionPoint(Shogi::Point)));
 
-    connect(sente, SIGNAL(selectPiece(const Shogi::Piece*)), board_view, SLOT(selectedPiece(const Shogi::Piece*)));
-    connect(gote, SIGNAL(selectPiece(const Shogi::Piece*)), board_view, SLOT(selectedPiece(const Shogi::Piece*)));
+    connect(sente, SIGNAL(selectPiece(const Shogi::Piece)), board_view, SLOT(selectedPiece(const Shogi::Piece)));
+    connect(gote, SIGNAL(selectPiece(const Shogi::Piece)), board_view, SLOT(selectedPiece(const Shogi::Piece)));
 
     /* 棋譜リストと同期 */
     connect(shogiComponent(), SIGNAL(recordAdded(Shogi::Record)), record, SLOT(recordUpdate(Shogi::Record)));

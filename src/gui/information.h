@@ -1,11 +1,11 @@
-#ifndef INFORMATION_H
-#define INFORMATION_H
+#ifndef GUI_INFORMATION_H
+#define GUI_INFORMATION_H
 
 #include <QDockWidget>
 #include <QListWidget>
 #include <QListWidgetItem>
 
-#include "shogi/shogi.h"
+#include <shogi.h>
 
 class Information : public QDockWidget
 {
@@ -38,4 +38,4 @@ private:
     QListWidgetItem *goteHandTimeItem;
 };
 
-#endif // INFORMATION_H
+#endif // GUI_INFORMATION_H

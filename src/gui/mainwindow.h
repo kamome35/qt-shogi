@@ -1,10 +1,9 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef GUI_MAINWINDOW_H
+#define GUI_MAINWINDOW_H
 
 #include <QMainWindow>
 
-#include <objs/human.h>
-#include <objs/shogicomponent.h>
+#include <objs.h>
 
 #include "information.h"
 #include "recordwidget.h"
@@ -39,4 +38,4 @@ private:
     QAction *start_action;
 };
 
-#endif // MAINWINDOW_H
+#endif // GUI_MAINWINDOW_H

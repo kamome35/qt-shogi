@@ -1,13 +1,12 @@
 #include <QTextCodec>
 #include <QMetaType>
 
-#include <shogi/shogi.h>
+#include <shogi.h>
 
 #ifndef SHOGI_NOT_GUI
 #include <QtGui/QApplication>
-#include <objs/shogicomponent.h>
-#include <objs/human.h>
-#include <gui/mainwindow.h>
+#include <objs.h>
+#include <gui.h>
 #else
 #include <stdio.h>
 #endif

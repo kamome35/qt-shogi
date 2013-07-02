@@ -1,14 +1,14 @@
 #include "shogicomponent.h"
 #include <QMetaType>
 
-#include <shogi/component.h>
+#include <shogi.h>
 
 using namespace Shogi;
 
 ShogiComponent::ShogiComponent(QObject *parent) :
-    QThread(parent)
+    QThread(parent),
+    Component()
 {
-    component = new Shogi::Component;
 }
 
 ShogiComponent::~ShogiComponent()
@@ -17,19 +17,23 @@ ShogiComponent::~ShogiComponent()
 
 void ShogiComponent::run()
 {
+    // ゲーム開始を通知
     emit gameStart();
 
+    // ゲーム状態を監視する
     forever {
-        if (component->gameStatus() != StatusPlaying)
+        if (gameStatus() != StatusPlaying)
             break;
     }
 
+    // ゲーム終了を通知
     emit gameEnd();
 }
 
 bool ShogiComponent::movePiece(Player turn, const Shogi::Point &from, const Shogi::Point &to, PieceType piece_type)
 {
-    if (component->movePiece(turn, from, to, piece_type)) {
+    // 駒を移動する
+    if (Component::movePiece(turn, from, to, piece_type)) {
         emit pieceMoved(from, to, piece_type);
         return true;
     } else {

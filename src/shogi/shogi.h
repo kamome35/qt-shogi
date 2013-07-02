@@ -1,5 +1,5 @@
-#ifndef SHOGI_H
-#define SHOGI_H
+#ifndef SHOGI_SHOGI_H
+#define SHOGI_SHOGI_H
 
 #include <QMap>
 #include <QList>
@@ -185,4 +185,4 @@ Q_DECLARE_METATYPE(Shogi::MovingRangeList)
 QDataStream &operator <<(QDataStream &out, const Shogi::MovingRangeList &data);
 QDataStream &operator >>(QDataStream &in, Shogi::MovingRangeList &data);
 
-#endif // SHOGI_H
+#endif // SHOGI_SHOGI_H

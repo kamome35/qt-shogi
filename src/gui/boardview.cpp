@@ -1,12 +1,105 @@
 #include "boardview.h"
+#include <QGraphicsSceneHoverEvent>
 
-#include "shogi/board.h"
-#include "shogi/move.h"
+#include <shogi.h>
 
 using namespace Shogi;
 
 const char *x_num[] = { "１", "２", "３", "４", "５", "６", "７", "８", "９" };
 const char *y_num[] = { "一", "二", "三", "四", "五", "六", "七", "八", "九" };
+
+SquareItem::SquareItem(QGraphicsItem *parent) :
+    QGraphicsObject(parent),
+    m_piece(0),
+    m_point(-1, -1),
+    hover_enter(false),
+    clicked(false),
+    navi(false)
+{
+    static int uid;
+    m_uid = uid++;
+    setAcceptHoverEvents(true);
+}
+
+QRectF SquareItem::boundingRect() const
+{
+    return QRectF(-25, -25, 50, 50);
+}
+
+void SquareItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option);
+
+    if (hover_enter) {
+        painter->setBrush(widget->palette().brush(QPalette::Highlight));
+    } else if (clicked) {
+        painter->setBrush(Qt::darkCyan);
+    } else if (navi) {
+        painter->setBrush(Qt::lightGray);
+    }
+    painter->drawRect(boundingRect());
+
+    if (m_piece) {
+    }
+}
+
+void SquareItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (hover_enter != true) {
+        hover_enter = true;
+        update();
+
+        emit hoverPoint(point());
+    }
+    event->accept();
+}
+
+void SquareItem::hoverLeaveEvent(QGraphicsSceneHoverEvent *event)
+{
+    if (hover_enter != false) {
+        hover_enter = false;
+        update();
+    }
+    event->accept();
+}
+
+void SquareItem::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    event->accept();
+}
+
+void SquareItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton) {
+        emit clickPoint(point());
+    }
+    event->accept();
+}
+
+void SquareItem::setPiece(const Piece *piece)
+{
+    m_piece = piece;
+    if (piece) {
+        setRotation(piece->owner() == Sente ? 0 : 180);
+    }
+    update();
+}
+
+void SquareItem::setNavi(bool enabled)
+{
+    if (navi != enabled) {
+        navi = enabled;
+        update();
+    }
+}
+
+void SquareItem::setClicked(bool enabled)
+{
+    if (clicked != enabled) {
+        clicked = enabled;
+        update();
+    }
+}
 
 class SquareTextItem : public QGraphicsItem
 {
@@ -60,10 +153,10 @@ BoardView::BoardView(QWidget *parent) :
             SquareItem *item = new SquareItem();
             board[x - 1][y - 1] = item;
             item->setPos((BOARD_X_MAX - x) * SquareWidth, y * SquareWidth);
-            item->setPoint(Shogi::Point(x, y));
+            item->setPoint(Point(x, y));
             scene->addItem(item);
-            //connect(item, SIGNAL(hoverPoint(Shogi::Point)), this, SIGNAL(hoverPoint(Shogi::Point)));
-            connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionBoardPoint(Shogi::Point)));
+            //connect(item, SIGNAL(hoverPoint(Point)), this, SIGNAL(hoverPoint(Point)));
+            connect(item, SIGNAL(clickPoint(Point)), this, SLOT(selectionBoardPoint(Point)));
         }
     }
 
@@ -73,20 +166,20 @@ BoardView::BoardView(QWidget *parent) :
         SquareItem *item = new SquareItem();
         handBoard[Sente][i] = item;
         item->setPos(BOARD_X_MAX * SquareWidth + SquareWidth, (i + 3) * SquareWidth);
-        item->setPoint(Shogi::Point(0, i));
+        item->setPoint(Point(0, i));
         scene->addItem(item);
-        //connect(item, SIGNAL(hoverPoint(Shogi::Point)), this, SIGNAL(hoverPoint(Shogi::Point)));
-        connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionSenteHandPoint(Shogi::Point)));
+        //connect(item, SIGNAL(hoverPoint(Point)), this, SIGNAL(hoverPoint(Point)));
+        connect(item, SIGNAL(clickPoint(Point)), this, SLOT(selectionSenteHandPoint(Point)));
     }
     // 後手
     for (int i = 0; i < HAND_PIECE_TYPE_NUM; ++i) {
         SquareItem *item = new SquareItem();
         handBoard[Gote][i] = item;
         item->setPos(-SquareWidth * 2, BOARD_Y_MAX * SquareWidth - SquareWidth * (i + 2));
-        item->setPoint(Shogi::Point(0, i));
+        item->setPoint(Point(0, i));
         scene->addItem(item);
-        //connect(item, SIGNAL(hoverPoint(Shogi::Point)), this, SIGNAL(hoverPoint(Shogi::Point)));
-        connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionGoteHandPoint(Shogi::Point)));
+        //connect(item, SIGNAL(hoverPoint(Point)), this, SIGNAL(hoverPoint(Point)));
+        connect(item, SIGNAL(clickPoint(Point)), this, SLOT(selectionGoteHandPoint(Point)));
     }
     setScene(scene);
 }

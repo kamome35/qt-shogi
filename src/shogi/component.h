@@ -172,7 +172,7 @@ public:
      * @param piece_type 移動する駒種別
      * @return 駒を移動できた場合は true を返却する。 駒を移動できなかった場合は false を返却する。
      */
-    bool movePiece(Player player, const Point &from, const Point &to, PieceType piece_type);
+    virtual bool movePiece(Player player, const Point &from, const Point &to, PieceType piece_type);
 
     /**
      * 棋譜上の次の手へ移動する。

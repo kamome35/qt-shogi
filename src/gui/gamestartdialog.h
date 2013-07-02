@@ -1,9 +1,9 @@
-#ifndef GAMESTARTDIALOG_H
-#define GAMESTARTDIALOG_H
+#ifndef GUI_GAMESTARTDIALOG_H
+#define GUI_GAMESTARTDIALOG_H
 
 #include <QDialog>
 
-#include "shogi/shogi.h"
+#include <shogi.h>
 
 namespace Ui {
 class GameStartDialog;
@@ -24,4 +24,4 @@ private:
     Ui::GameStartDialog *ui;
 };
 
-#endif // GAMESTARTDIALOG_H
+#endif // GUI_GAMESTARTDIALOG_H

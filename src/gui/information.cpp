@@ -1,7 +1,7 @@
 #include "information.h"
 
 #include <QTimer>
-#include "shogi/component.h"
+#include <shogi.h>
 
 Information::Information(QWidget *parent) :
     QDockWidget(parent)

@@ -1,10 +1,10 @@
-#ifndef BATTLERECORD_H
-#define BATTLERECORD_H
+#ifndef GUI_BATTLERECORD_H
+#define GUI_BATTLERECORD_H
 
 #include <QDockWidget>
 #include <QListWidget>
 
-#include "shogi/shogi.h"
+#include <shogi.h>
 
 class RecordWidget : public QDockWidget
 {
@@ -22,4 +22,4 @@ private:
     QListWidget *widget;
 };
 
-#endif // BATTLERECORD_H
+#endif // GUI_BATTLERECORD_H
