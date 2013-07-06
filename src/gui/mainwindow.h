@@ -3,7 +3,8 @@
 
 #include <QMainWindow>
 
-#include <objs.h>
+#include <objs/shogicomponent.h>
+#include <objs/human.h>
 
 #include "information.h"
 #include "recordwidget.h"

@@ -1,8 +1,7 @@
 #include <QString>
 #include <QtTest>
 
-#include "shogi/shogi.h"
-#include "shogi/piece.h"
+#include <shogi.h>
 
 using namespace Shogi;
 

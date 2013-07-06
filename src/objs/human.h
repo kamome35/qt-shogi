@@ -2,7 +2,7 @@
 #define OBJS_HUMAN_H
 
 #include <QThread>
-#include <shogi.h>
+#include <shogi/shogi.h>
 
 #include "shogicomponent.h"
 

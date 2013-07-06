@@ -4,7 +4,8 @@
 #include <QObject>
 #include <QThread>
 
-#include <shogi.h>
+#include <shogi/shogi.h>
+#include <shogi/component.h>
 
 /**
  * 将棋コンポーネント

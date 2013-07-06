@@ -4,7 +4,7 @@
 #include <QGraphicsView>
 #include <QGraphicsObject>
 
-#include <shogi.h>
+#include <shogi/shogi.h>
 
 class SquareItem;
 

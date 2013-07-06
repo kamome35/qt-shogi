@@ -1,7 +1,7 @@
 #include "shogicomponent.h"
-#include <QMetaType>
 
-#include <shogi.h>
+#include <shogi/shogi.h>
+#include <shogi/component.h>
 
 using namespace Shogi;
 
@@ -30,7 +30,7 @@ void ShogiComponent::run()
     emit gameEnd();
 }
 
-bool ShogiComponent::movePiece(Player turn, const Shogi::Point &from, const Shogi::Point &to, PieceType piece_type)
+bool ShogiComponent::movePiece(Player turn, const Point &from, const Point &to, PieceType piece_type)
 {
     // 駒を移動する
     if (Component::movePiece(turn, from, to, piece_type)) {

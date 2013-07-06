@@ -1,6 +1,8 @@
 #include "computerhuman.h"
 
-ComputerHuman::ComputerHuman(Shogi::Player player, QObject *parent) :
+using namespace Shogi;
+
+ComputerHuman::ComputerHuman(Player player, QObject *parent) :
     Human(player, parent)
 {
     think = new QThread();
@@ -16,7 +18,7 @@ void ComputerHuman::doThinking()
 {
 }
 
-void ComputerHuman::selectionPoint(const Shogi::Point &point)
+void ComputerHuman::selectionPoint(const Point &point)
 {
     Q_UNUSED(point);
 }

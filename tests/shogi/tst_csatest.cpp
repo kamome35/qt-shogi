@@ -1,10 +1,7 @@
 #include <QtCore/QString>
 #include <QtTest/QtTest>
 
-#include <shogi/shogi.h>
-#include <shogi/csa.h>
-#include <shogi/board.h>
-#include <shogi/piece.h>
+#include <shogi.h>
 
 using namespace Shogi;
 

@@ -1,14 +1,16 @@
 #include "human.h"
-#include <QMetaType>
 #include <QMessageBox>
 
-#include <shogi.h>
+#include <QThread>
+#include <shogi/shogi.h>
+#include <shogi/move.h>
 
 using namespace Shogi;
 
 Human::Human(Player player, QObject *parent) :
     QThread(parent)
 {
+    Q_UNUSED(player);
 }
 
 Human::~Human()
@@ -17,6 +19,7 @@ Human::~Human()
 
 void Human::setShogiComponent(ShogiComponent *shogi_component)
 {
+    Q_UNUSED(shogi_component);
 }
 
 void Human::run()

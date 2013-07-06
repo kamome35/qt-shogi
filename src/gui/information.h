@@ -5,7 +5,7 @@
 #include <QListWidget>
 #include <QListWidgetItem>
 
-#include <shogi.h>
+#include <shogi/shogi.h>
 
 class Information : public QDockWidget
 {

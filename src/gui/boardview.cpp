@@ -1,7 +1,8 @@
 #include "boardview.h"
 #include <QGraphicsSceneHoverEvent>
 
-#include <shogi.h>
+#include <shogi/shogi.h>
+#include <shogi/piece.h>
 
 using namespace Shogi;
 
@@ -260,6 +261,7 @@ void BoardView::selectionGoteHandPoint(const Point &point)
 
 void BoardView::selectedPiece(const Piece *piece)
 {
+    Q_UNUSED(piece);
 }
 
 void BoardView::boardUpdate(const Point &from, const Point &to, PieceType piece_type)

@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-#include <shogi.h>
+#include <shogi/shogi.h>
 
 namespace Ui {
 class GameStartDialog;

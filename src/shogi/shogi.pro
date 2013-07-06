@@ -1,15 +1,8 @@
-#-------------------------------------------------
-#
-# Project
-#
-#-------------------------------------------------
-include(../../shogi.pri)
+! include( ../../lib_common.pri ) {
+    error( Couldn't find the lib_common.pri file! )
+}
 
 TARGET   = shogi
-QT      += core
-TEMPLATE = lib
-CONFIG  += staticlib
-
 
 HEADERS += \
     shogi.h \
@@ -28,24 +21,3 @@ SOURCES += \
     record.cpp \
     component.cpp \
     shogi.cpp
-
-global_header.path = $$IDE_INCLUDE_PATH/shogi
-global_header.files = $$HEADERS
-INSTALLS += global_header
-
-
-DESTDIR = $$IDE_LIBRARY_PATH
-
-
-
-
-
-
-
-
-
-
-
-
-
-

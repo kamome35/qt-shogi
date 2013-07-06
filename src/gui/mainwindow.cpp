@@ -6,8 +6,8 @@
 #include <QAction>
 #include <QMenuBar>
 
-#include <shogi.h>
-#include <objs.h>
+#include <shogi/shogi.h>
+#include <objs/human.h>
 
 
 using namespace Shogi;

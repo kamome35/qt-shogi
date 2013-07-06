@@ -1,10 +1,6 @@
 #ifndef SHOGI_PIECE_H
 #define SHOGI_PIECE_H
 
-#include <QString>
-#include <QList>
-#include <QMetaType>
-
 #include "shogi.h"
 
 namespace Shogi {

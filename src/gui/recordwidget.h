@@ -4,7 +4,7 @@
 #include <QDockWidget>
 #include <QListWidget>
 
-#include <shogi.h>
+#include <shogi/shogi.h>
 
 class RecordWidget : public QDockWidget
 {
