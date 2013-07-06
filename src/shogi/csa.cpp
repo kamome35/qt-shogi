@@ -212,7 +212,6 @@ void Csa::boardInitConvert(const String &text)
             piece.setPoint(piece_init_type[i].point);
             m_component.setPiece(piece);
         }
-
     }
         break;
     case '1':   // 一括表現

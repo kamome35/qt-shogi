@@ -24,6 +24,8 @@ void ShogiComponent::run()
     forever {
         if (gameStatus() != StatusPlaying)
             break;
+
+        exec();
     }
 
     // ゲーム終了を通知

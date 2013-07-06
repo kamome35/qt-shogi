@@ -18,7 +18,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    ShogiComponent *shogiComponent() const { return shogi_component; }
 
 public slots:
     void setup();

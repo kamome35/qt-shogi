@@ -1,3 +1,5 @@
+IDE_LIBRARY_PATH=$$PWD/lib
 
 LIBS += -L$$PWD/lib
-DESTDIR  = $$PWD/bin
+DESTDIR = $$PWD/bin
+DEPENDPATH = $$PWD/lib

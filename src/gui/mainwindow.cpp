@@ -63,10 +63,69 @@ void MainWindow::setup()
     sente = new Human(Sente, this);
     gote = new Human(Gote, this);
 
+    struct PieceInitList {
+        Player owner;
+        PieceType piece_type;
+        Point point;
+    };
+
+    // 平手の駒配置
+    const PieceInitList piece_init_type[] = {
+        { Sente, PiecePawn,   Point(1, 7) },
+        { Sente, PiecePawn,   Point(2, 7) },
+        { Sente, PiecePawn,   Point(3, 7) },
+        { Sente, PiecePawn,   Point(4, 7) },
+        { Sente, PiecePawn,   Point(5, 7) },
+        { Sente, PiecePawn,   Point(6, 7) },
+        { Sente, PiecePawn,   Point(7, 7) },
+        { Sente, PiecePawn,   Point(8, 7) },
+        { Sente, PiecePawn,   Point(9, 7) },
+        { Sente, PieceRook,   Point(2, 8) },
+        { Sente, PieceBishop, Point(8, 8) },
+        { Sente, PieceLance,  Point(1, 9) },
+        { Sente, PieceKnight, Point(2, 9) },
+        { Sente, PieceSilver, Point(3, 9) },
+        { Sente, PieceGold,   Point(4, 9) },
+        { Sente, PieceKing,   Point(5, 9) },
+        { Sente, PieceGold,   Point(6, 9) },
+        { Sente, PieceSilver, Point(7, 9) },
+        { Sente, PieceKnight, Point(8, 9) },
+        { Sente, PieceLance,  Point(9, 9) },
+        { Gote,  PiecePawn,   Point(1, 3) },
+        { Gote,  PiecePawn,   Point(2, 3) },
+        { Gote,  PiecePawn,   Point(3, 3) },
+        { Gote,  PiecePawn,   Point(4, 3) },
+        { Gote,  PiecePawn,   Point(5, 3) },
+        { Gote,  PiecePawn,   Point(6, 3) },
+        { Gote,  PiecePawn,   Point(7, 3) },
+        { Gote,  PiecePawn,   Point(8, 3) },
+        { Gote,  PiecePawn,   Point(9, 3) },
+        { Gote,  PieceRook,   Point(8, 2) },
+        { Gote,  PieceBishop, Point(2, 2) },
+        { Gote,  PieceLance,  Point(1, 1) },
+        { Gote,  PieceKnight, Point(2, 1) },
+        { Gote,  PieceSilver, Point(3, 1) },
+        { Gote,  PieceGold,   Point(4, 1) },
+        { Gote,  PieceKing,   Point(5, 1) },
+        { Gote,  PieceGold,   Point(6, 1) },
+        { Gote,  PieceSilver, Point(7, 1) },
+        { Gote,  PieceKnight, Point(8, 1) },
+        { Gote,  PieceLance,  Point(9, 1) },
+    };
+
+    // 駒を配置する
+    const int count = sizeof(piece_init_type) / sizeof(piece_init_type[0]);
+    for (int i = 0; i < count; ++i) {
+        Piece piece(piece_init_type[i].owner, piece_init_type[i].piece_type);
+        piece.setPoint(piece_init_type[i].point);
+        shogi_component->setPiece(piece);
+    }
+
+    shogi_component->gameStartInit(gamestartdialog->timeLimit());
     sente->setShogiComponent(shogi_component);
     gote->setShogiComponent(shogi_component);
-    info->setShogiComponent(shogiComponent());
-    board_view->setShogiComponent(shogiComponent());
+    info->setShogiComponent(shogi_component);
+    board_view->setShogiComponent(shogi_component);
     shogi_component->start();
     sente->start();
     gote->start();
@@ -81,6 +140,6 @@ void MainWindow::setup()
     connect(gote, SIGNAL(selectPiece(const Shogi::Piece)), board_view, SLOT(selectedPiece(const Shogi::Piece)));
 
     /* 棋譜リストと同期 */
-    connect(shogiComponent(), SIGNAL(recordAdded(Shogi::Record)), record, SLOT(recordUpdate(Shogi::Record)));
-    connect(shogiComponent(), SIGNAL(pieceMoved(Shogi::Point,Shogi::Point,Shogi::PieceType)), board_view, SLOT(boardUpdate(Shogi::Point,Shogi::Point,Shogi::PieceType)));
+    connect(shogi_component, SIGNAL(recordAdded(Shogi::Record)), record, SLOT(recordUpdate(Shogi::Record)));
+    connect(shogi_component, SIGNAL(pieceMoved(Shogi::Point,Shogi::Point,Shogi::PieceType)), board_view, SLOT(boardUpdate(Shogi::Point,Shogi::Point,Shogi::PieceType)));
 }

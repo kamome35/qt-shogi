@@ -24,7 +24,7 @@ Shogi::String GameStartDialog::gotePlayerName() const
     return !ui->gotePlayerName->text().isEmpty() ? ui->gotePlayerName->text() : tr("No Name");
 }
 
-int GameStartDialog::timeLimit() const
+Shogi::Time GameStartDialog::timeLimit() const
 {
-    return QTime().secsTo(ui->limitTime->time());
+    return ui->limitTime->time();
 }

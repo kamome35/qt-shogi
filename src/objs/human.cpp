@@ -8,9 +8,11 @@
 using namespace Shogi;
 
 Human::Human(Player player, QObject *parent) :
-    QThread(parent)
+    QThread(parent),
+    component(NULL),
+    player(player),
+    thinking(true)
 {
-    Q_UNUSED(player);
 }
 
 Human::~Human()
@@ -19,7 +21,7 @@ Human::~Human()
 
 void Human::setShogiComponent(ShogiComponent *shogi_component)
 {
-    Q_UNUSED(shogi_component);
+    component = shogi_component;
 }
 
 void Human::run()
@@ -34,6 +36,8 @@ void Human::run()
             // 思考フラグを有効にする
             thinking = true;
         }
+
+        exec();
     }
 }
 

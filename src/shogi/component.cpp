@@ -22,7 +22,7 @@ void Component::setGameStatus(GameStatus status)
     m_status = status;
 }
 
-void Component::gameStart(const Time &time_limit, const Time &time_byoyomi)
+void Component::gameStartInit(const Time &time_limit, const Time &time_byoyomi)
 {
     m_status = StatusPlaying;
     m_turn = Sente;

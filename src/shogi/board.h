@@ -19,6 +19,7 @@ public:
      * piece に指定した駒を盤に登録する。
      *
      * @param piece
+     * @see squarePiece
      */
     void setPiece(Piece &piece);
 

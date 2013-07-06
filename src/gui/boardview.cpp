@@ -3,15 +3,17 @@
 
 #include <shogi/shogi.h>
 #include <shogi/piece.h>
+#include <shogi/component.h>
 
 using namespace Shogi;
 
 const char *x_num[] = { "１", "２", "３", "４", "５", "６", "７", "８", "９" };
 const char *y_num[] = { "一", "二", "三", "四", "五", "六", "七", "八", "九" };
+const char *piece_name[] = { "", "歩", "香", "桂", "銀", "金", "飛", "角", "玉", "と", "杏", "圭", "全", "竜", "馬" };
 
 SquareItem::SquareItem(QGraphicsItem *parent) :
     QGraphicsObject(parent),
-    m_piece(0),
+    m_piece(),
     m_point(-1, -1),
     hover_enter(false),
     clicked(false),
@@ -40,8 +42,7 @@ void SquareItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     }
     painter->drawRect(boundingRect());
 
-    if (m_piece) {
-    }
+    painter->drawText(boundingRect(), Qt::AlignCenter, tr(piece_name[m_piece.type()]));
 }
 
 void SquareItem::hoverEnterEvent(QGraphicsSceneHoverEvent *event)
@@ -77,12 +78,10 @@ void SquareItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
     event->accept();
 }
 
-void SquareItem::setPiece(const Piece *piece)
+void SquareItem::setPiece(const Piece &piece)
 {
     m_piece = piece;
-    if (piece) {
-        setRotation(piece->owner() == Sente ? 0 : 180);
-    }
+    setRotation(piece.owner() == Sente ? 0 : 180);
     update();
 }
 
@@ -156,8 +155,7 @@ BoardView::BoardView(QWidget *parent) :
             item->setPos((BOARD_X_MAX - x) * SquareWidth, y * SquareWidth);
             item->setPoint(Point(x, y));
             scene->addItem(item);
-            //connect(item, SIGNAL(hoverPoint(Point)), this, SIGNAL(hoverPoint(Point)));
-            connect(item, SIGNAL(clickPoint(Point)), this, SLOT(selectionBoardPoint(Point)));
+            connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionBoardPoint(Shogi::Point)));
         }
     }
 
@@ -169,8 +167,7 @@ BoardView::BoardView(QWidget *parent) :
         item->setPos(BOARD_X_MAX * SquareWidth + SquareWidth, (i + 3) * SquareWidth);
         item->setPoint(Point(0, i));
         scene->addItem(item);
-        //connect(item, SIGNAL(hoverPoint(Point)), this, SIGNAL(hoverPoint(Point)));
-        connect(item, SIGNAL(clickPoint(Point)), this, SLOT(selectionSenteHandPoint(Point)));
+        connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionSenteHandPoint(Shogi::Point)));
     }
     // 後手
     for (int i = 0; i < HAND_PIECE_TYPE_NUM; ++i) {
@@ -179,8 +176,7 @@ BoardView::BoardView(QWidget *parent) :
         item->setPos(-SquareWidth * 2, BOARD_Y_MAX * SquareWidth - SquareWidth * (i + 2));
         item->setPoint(Point(0, i));
         scene->addItem(item);
-        //connect(item, SIGNAL(hoverPoint(Point)), this, SIGNAL(hoverPoint(Point)));
-        connect(item, SIGNAL(clickPoint(Point)), this, SLOT(selectionGoteHandPoint(Point)));
+        connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionGoteHandPoint(Shogi::Point)));
     }
     setScene(scene);
 }
@@ -206,6 +202,25 @@ void BoardView::setShogiComponent(const Component *component)
 
 void BoardView::boardUpdate() const
 {
+    const Board b = shogiComonent->board();
+    for (int x = 1; x <= BOARD_X_MAX; ++x) {
+        for (int y = 1; y <= BOARD_Y_MAX; ++y) {
+            Piece piece = b.squarePiece(Point(x, y));
+            board[x - 1][y - 1]->setPiece(piece);
+        }
+    }
+    for (int i = 1; i <= HAND_PIECE_TYPE_NUM; ++i) {
+        const PieceList &piece_list = b.handPieces(Sente, static_cast<PieceType>(i));
+        if (piece_list.count() > 0) {
+            handBoard[Sente][i]->setPiece(piece_list.first());
+        }
+    }
+    for (int i = 1; i <= HAND_PIECE_TYPE_NUM; ++i) {
+        const PieceList &piece_list = b.handPieces(Gote, static_cast<PieceType>(i));
+        if (piece_list.count() > 0) {
+            handBoard[Gote][i]->setPiece(piece_list.first());
+        }
+    }
 }
 
 void BoardView::naviClear() const
@@ -259,7 +274,7 @@ void BoardView::selectionGoteHandPoint(const Point &point)
     emit selectedGoteHandPoint(point);
 }
 
-void BoardView::selectedPiece(const Piece *piece)
+void BoardView::selectedPiece(const Piece &piece)
 {
     Q_UNUSED(piece);
 }

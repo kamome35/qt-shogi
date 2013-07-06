@@ -40,7 +40,7 @@ public:
      * @param time_limit 持ち時間
      * @param time_byoyomi 秒読み
      */
-    void gameStart(const Time &time_limit, const Time &time_byoyomi = Time());
+    void gameStartInit(const Time &time_limit, const Time &time_byoyomi = Time());
 
     /**
      * ゲームを中断する

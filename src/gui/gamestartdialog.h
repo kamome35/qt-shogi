@@ -18,7 +18,7 @@ public:
     ~GameStartDialog();
     Shogi::String sentePlayerName() const;
     Shogi::String gotePlayerName() const;
-    int timeLimit() const;
+    Shogi::Time timeLimit() const;
     
 private:
     Ui::GameStartDialog *ui;

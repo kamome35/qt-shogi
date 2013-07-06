@@ -5,6 +5,7 @@
 #include <QGraphicsObject>
 
 #include <shogi/shogi.h>
+#include <shogi/piece.h>
 
 class SquareItem;
 
@@ -31,7 +32,7 @@ public slots:
     void selectionBoardPoint(const Shogi::Point &point);
     void selectionSenteHandPoint(const Shogi::Point &point);
     void selectionGoteHandPoint(const Shogi::Point &point);
-    void selectedPiece(const Shogi::Piece *piece);
+    void selectedPiece(const Shogi::Piece &piece);
     void boardUpdate(const Shogi::Point &from, const Shogi::Point &to, Shogi::PieceType piece_type);
 
 private:
@@ -59,7 +60,7 @@ public:
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     inline void setPoint(const Shogi::Point &point) { m_point = point; }
     inline Shogi::Point point() const  { return m_point; }
-    void setPiece(const Shogi::Piece *piece);
+    void setPiece(const Shogi::Piece &piece);
     void setNavi(bool enabled);
 signals:
     void hoverPoint(const Shogi::Point &point);
@@ -70,7 +71,7 @@ public slots:
 
 private:
     int m_uid;
-    const Shogi::Piece *m_piece;
+    Shogi::Piece m_piece;
     Shogi::Point m_point;
     bool hover_enter;
     bool clicked;
