@@ -4,12 +4,16 @@
 #include <shogi/shogi.h>
 #include <shogi/piece.h>
 #include <shogi/component.h>
+#include <shogi/move.h>
 
 using namespace Shogi;
 
 const char *x_num[] = { "１", "２", "３", "４", "５", "６", "７", "８", "９" };
 const char *y_num[] = { "一", "二", "三", "四", "五", "六", "七", "八", "九" };
 const char *piece_name[] = { "", "歩", "香", "桂", "銀", "金", "飛", "角", "玉", "と", "杏", "圭", "全", "竜", "馬" };
+
+
+namespace BoardViewInner {
 
 SquareItem::SquareItem(QGraphicsItem *parent) :
     QGraphicsObject(parent),
@@ -129,6 +133,8 @@ private:
     QFont font;
 };
 
+} // namespace BoardViewInner
+
 BoardView::BoardView(QWidget *parent) :
     QGraphicsView(parent),
     select_point(-1, -1),
@@ -139,18 +145,18 @@ BoardView::BoardView(QWidget *parent) :
     // 盤
     const int board_offs = SquareWidth / 5;
     for (int x = 1; x <= BOARD_X_MAX; ++x) {
-        SquareTextItem *item = new SquareTextItem(tr(x_num[x-1]));
+        BoardViewInner::SquareTextItem *item = new BoardViewInner::SquareTextItem(tr(x_num[x-1]));
         item->setPos((BOARD_X_MAX - x) * SquareWidth, board_offs);
         scene->addItem(item);
     }
     for (int y = 1; y <= BOARD_Y_MAX; ++y) {
-        SquareTextItem *item = new SquareTextItem(tr(y_num[y-1]));
+        BoardViewInner::SquareTextItem *item = new BoardViewInner::SquareTextItem(tr(y_num[y-1]));
         item->setPos(BOARD_X_MAX * SquareWidth - board_offs, y * SquareWidth);
         scene->addItem(item);
     }
     for (int x = 1; x <= BOARD_X_MAX; ++x) {
         for (int y = 1; y <= BOARD_Y_MAX; ++y) {
-            SquareItem *item = new SquareItem();
+            BoardViewInner::SquareItem *item = new BoardViewInner::SquareItem();
             board[x - 1][y - 1] = item;
             item->setPos((BOARD_X_MAX - x) * SquareWidth, y * SquareWidth);
             item->setPoint(Point(x, y));
@@ -162,7 +168,7 @@ BoardView::BoardView(QWidget *parent) :
     /* 持ち駒台 */
     // 先手
     for (int i = 0; i < HAND_PIECE_TYPE_NUM; ++i) {
-        SquareItem *item = new SquareItem();
+        BoardViewInner::SquareItem *item = new BoardViewInner::SquareItem();
         handBoard[Sente][i] = item;
         item->setPos(BOARD_X_MAX * SquareWidth + SquareWidth, (i + 3) * SquareWidth);
         item->setPoint(Point(0, i));
@@ -171,7 +177,7 @@ BoardView::BoardView(QWidget *parent) :
     }
     // 後手
     for (int i = 0; i < HAND_PIECE_TYPE_NUM; ++i) {
-        SquareItem *item = new SquareItem();
+        BoardViewInner::SquareItem *item = new BoardViewInner::SquareItem();
         handBoard[Gote][i] = item;
         item->setPos(-SquareWidth * 2, BOARD_Y_MAX * SquareWidth - SquareWidth * (i + 2));
         item->setPoint(Point(0, i));
@@ -198,38 +204,6 @@ void BoardView::setShogiComponent(const Component *component)
 {
     shogiComonent = component;
     boardUpdate();
-}
-
-void BoardView::boardUpdate() const
-{
-    const Board b = shogiComonent->board();
-    for (int x = 1; x <= BOARD_X_MAX; ++x) {
-        for (int y = 1; y <= BOARD_Y_MAX; ++y) {
-            Piece piece = b.squarePiece(Point(x, y));
-            board[x - 1][y - 1]->setPiece(piece);
-        }
-    }
-    for (int i = 1; i <= HAND_PIECE_TYPE_NUM; ++i) {
-        const PieceList &piece_list = b.handPieces(Sente, static_cast<PieceType>(i));
-        if (piece_list.count() > 0) {
-            handBoard[Sente][i]->setPiece(piece_list.first());
-        }
-    }
-    for (int i = 1; i <= HAND_PIECE_TYPE_NUM; ++i) {
-        const PieceList &piece_list = b.handPieces(Gote, static_cast<PieceType>(i));
-        if (piece_list.count() > 0) {
-            handBoard[Gote][i]->setPiece(piece_list.first());
-        }
-    }
-}
-
-void BoardView::naviClear() const
-{
-    for (int x = 1; x <= BOARD_X_MAX; ++x) {
-        for (int y = 1; y <= BOARD_Y_MAX; ++y) {
-            board[x - 1][y - 1]->setNavi(false);
-        }
-    }
 }
 
 void BoardView::selectionBoardPoint(const Point &point)
@@ -276,7 +250,10 @@ void BoardView::selectionGoteHandPoint(const Point &point)
 
 void BoardView::selectedPiece(const Piece &piece)
 {
-    Q_UNUSED(piece);
+    MovePointList move_points = Move(shogiComonent->board()).movePoints(piece);
+    foreach (const MovePoint &move_point, move_points) {
+        board[move_point.to.x() - 1][move_point.to.y() - 1]->setNavi(true);
+    }
 }
 
 void BoardView::boardUpdate(const Point &from, const Point &to, PieceType piece_type)
@@ -285,4 +262,36 @@ void BoardView::boardUpdate(const Point &from, const Point &to, PieceType piece_
     Q_UNUSED(to);
     Q_UNUSED(piece_type);
     boardUpdate();
+}
+
+void BoardView::boardUpdate() const
+{
+    const Board b = shogiComonent->board();
+    for (int x = 1; x <= BOARD_X_MAX; ++x) {
+        for (int y = 1; y <= BOARD_Y_MAX; ++y) {
+            Piece piece = b.squarePiece(Point(x, y));
+            board[x - 1][y - 1]->setPiece(piece);
+        }
+    }
+    for (int i = 1; i <= HAND_PIECE_TYPE_NUM; ++i) {
+        const PieceList &piece_list = b.handPieces(Sente, static_cast<PieceType>(i));
+        if (piece_list.count() > 0) {
+            handBoard[Sente][i - 1]->setPiece(piece_list.first());
+        }
+    }
+    for (int i = 1; i <= HAND_PIECE_TYPE_NUM; ++i) {
+        const PieceList &piece_list = b.handPieces(Gote, static_cast<PieceType>(i));
+        if (piece_list.count() > 0) {
+            handBoard[Gote][i - 1]->setPiece(piece_list.first());
+        }
+    }
+}
+
+void BoardView::naviClear() const
+{
+    for (int x = 1; x <= BOARD_X_MAX; ++x) {
+        for (int y = 1; y <= BOARD_Y_MAX; ++y) {
+            board[x - 1][y - 1]->setNavi(false);
+        }
+    }
 }

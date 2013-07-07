@@ -64,8 +64,13 @@ bool Move::canMove(Player player, const Point &from, const Point &to, PieceType 
     Q_ASSERT(piece_type != PieceEmpty);
 
     // 移動元の駒を取得する
+#if 1
     const Piece &piece = m_board.piece(player, from, piece_type);
-
+#else
+    const Piece &piece = m_board.piece(player, from, piece_type).type() != PieceEmpty ?
+                         m_board.piece(player, from, piece_type) :
+                         m_board.piece(player, from, frontPieceType(piece_type));
+#endif
     // 移動元の駒がない場合は移動できない
     if (piece.type() == PieceEmpty)
         return false;
@@ -103,14 +108,14 @@ MovePromotion Move::movePromotionJudge(const Piece &piece, const Point &to) cons
 
     // 昇格エリアに移動する場合、もしくは昇格エリア内からの移動する場合は成ることができる
     if (piece.owner() == Sente) {
-        if (to.y() == 3)
+        if (to.y() <= 3)
             return PromotionAny;
-        if (piece.point().y() == 3)
+        if (piece.point().y() <= 3)
             return PromotionAny;
     } else if (piece.owner() == Gote) {
-        if (to.y() == 7)
+        if (to.y() >= 7)
             return PromotionAny;
-        if (piece.point().y() == 7)
+        if (piece.point().y() >= 7)
             return PromotionAny;
     }
 
@@ -166,8 +171,10 @@ MovePointList Move::movePointsOfSquarePiece(const Piece &piece) const
                         break;
                     }
                 }
-            } else {
-                // 駒が配置してあった場合は移動先の検索を抜ける
+            }
+
+            // 駒が配置してあった場合は検索を抜ける
+            if (search_piece.type() != PieceEmpty) {
                 break;
             }
         }
@@ -212,6 +219,55 @@ MovePointList Move::movePointsOfHandPiece(const Piece &piece) const
     }
 
     return move_points;
+}
+
+PieceType Move::frontPieceType(PieceType piece_type) const
+{
+    switch (piece_type) {
+    case PiecePawn:
+    case PiecePawnPromotion:
+        return PiecePawn;
+        break;
+
+    case PieceLance:
+    case PieceLancePromotion:
+        return PieceLance;
+        break;
+
+    case PieceKnight:
+    case PieceKnightPromotion:
+        return PieceKnight;
+        break;
+
+    case PieceSilver:
+    case PieceSilverPromotion:
+        return PieceSilver;
+        break;
+
+    case PieceGold:
+        return PieceGold;
+        break;
+
+    case PieceRook:
+    case PieceRookPromotion:
+        return PieceRook;
+        break;
+
+    case PieceBishop:
+    case PieceBishopPromotion:
+        return PieceBishop;
+        break;
+
+    case PieceKing:
+        return PieceKing;
+        break;
+
+    default:
+        Q_ASSERT_X(false, "reversePieceType", "Unknown piece type.");   // 未知の駒種別が指定されている
+        break;
+    }
+
+    return PieceEmpty;
 }
 
 PieceType Move::reversePieceType(PieceType piece_type) const
@@ -326,7 +382,7 @@ bool Move::placeCheck(const Piece &piece, const Point &to) const
             break;
 
         case PieceKnight:
-            if (to.y() == 2)
+            if (to.y() <= 2)
                 return false;
             break;
 
@@ -342,7 +398,7 @@ bool Move::placeCheck(const Piece &piece, const Point &to) const
             break;
 
         case PieceKnight:
-            if (to.y() == 8)
+            if (to.y() >= 8)
                 return false;
             break;
 

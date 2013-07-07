@@ -91,8 +91,10 @@ void Board::movePiece(Piece piece, const Point &to)
     }
 
     // 盤面移動先情報を反映する。
+    player_pieces[piece.owner()].removeOne(piece);
     piece.setPoint(to);
     square_piece[piece.point().x() - 1][piece.point().y() - 1] = piece;
+    player_pieces[piece.owner()].append(piece);
 
     // 種別が玉の場合は情報を更新する
     if (piece.type() == PieceKing)
@@ -118,9 +120,9 @@ Piece Board::piece(Player player, const Point &from, PieceType piece_type) const
         piece = squarePiece(from);
 
         // 指定した駒種別と違う場合は取得できない
-        if (piece.type() != piece_type) {
-            return Piece();
-        }
+        //if (piece.type() != piece_type) {
+        //    return Piece();
+        //}
 
         // 駒の所有者が自分ではなかった場合は取得できない
         if (piece.owner() != player) {

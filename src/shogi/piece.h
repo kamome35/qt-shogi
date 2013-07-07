@@ -43,6 +43,13 @@ public:
     PieceType type() const;
 
     /**
+     * 駒種別を変更する
+     *
+     * @param piece_type 駒種別
+     */
+    void setType(PieceType piece_type);
+
+    /**
      * 昇格可能か？
      *
      * @return  true 昇格可能

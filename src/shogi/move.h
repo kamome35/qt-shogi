@@ -74,6 +74,14 @@ protected:
     MovePointList movePointsOfHandPiece(const Piece &piece) const;
 
     /**
+     * 駒の表側の種別を取得する
+     *
+     * @param piece_type
+     * @return
+     */
+    PieceType frontPieceType(PieceType piece_type) const;
+
+    /**
      * 駒の裏側の種別を取得する
      *
      * @param piece_type 検索したい駒種別を指定する

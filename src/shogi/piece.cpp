@@ -532,6 +532,11 @@ PieceType Piece::type() const
     return internal->type();
 }
 
+void Piece::setType(PieceType piece_type)
+{
+    internal = PieceInternal::getInstance(piece_type);
+}
+
 bool Piece::canPromotion() const
 {
     Q_ASSERT(internal);

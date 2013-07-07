@@ -119,6 +119,7 @@ bool Component::movePiece(Player player, const Point &from, const Point &to, Pie
 
     // 駒を移動する
     Piece piece = m_board.piece(player, from, piece_type);
+    piece.setType(piece_type);
     m_board.movePiece(piece, to);
     m_board_list.append(m_board);
 

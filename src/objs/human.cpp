@@ -37,7 +37,7 @@ void Human::run()
             thinking = true;
         }
 
-        exec();
+        //sleep(1);
     }
 }
 
@@ -60,7 +60,7 @@ void Human::selectionPoint(const Point &point)
     // 選択中の駒が存在する場合は移動処理を実施する
     if (select_piece != Piece()) {
         // 駒の移動先リストを取得する
-        MovePointList move_points = Move(component->board()).movePoints(piece);
+        MovePointList move_points = Move(component->board()).movePoints(select_piece);
         foreach (const MovePoint &move_point, move_points) {
             // 選択した座標が駒の移動先リストに含まれているか判定する
             if (move_point.to == point) {
@@ -89,6 +89,7 @@ void Human::selectionPoint(const Point &point)
                     break;
 
                 }
+                select_piece = Piece();
                 thinking = false;
                 return;
             }

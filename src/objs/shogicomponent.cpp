@@ -17,6 +17,9 @@ ShogiComponent::~ShogiComponent()
 
 void ShogiComponent::run()
 {
+    qRegisterMetaType<Shogi::Point>("Shogi::Point");
+    qRegisterMetaType<Shogi::PieceType>("Shogi::PieceType");
+
     // ゲーム開始を通知
     emit gameStart();
 
