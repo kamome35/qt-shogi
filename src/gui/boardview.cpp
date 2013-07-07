@@ -171,7 +171,7 @@ BoardView::BoardView(QWidget *parent) :
         BoardViewInner::SquareItem *item = new BoardViewInner::SquareItem();
         handBoard[Sente][i] = item;
         item->setPos(BOARD_X_MAX * SquareWidth + SquareWidth, (i + 3) * SquareWidth);
-        item->setPoint(Point(0, i));
+        item->setPoint(Point(0, i + 1));
         scene->addItem(item);
         connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionSenteHandPoint(Shogi::Point)));
     }
@@ -180,7 +180,7 @@ BoardView::BoardView(QWidget *parent) :
         BoardViewInner::SquareItem *item = new BoardViewInner::SquareItem();
         handBoard[Gote][i] = item;
         item->setPos(-SquareWidth * 2, BOARD_Y_MAX * SquareWidth - SquareWidth * (i + 2));
-        item->setPoint(Point(0, i));
+        item->setPoint(Point(0, i + 1));
         scene->addItem(item);
         connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionGoteHandPoint(Shogi::Point)));
     }
@@ -226,7 +226,7 @@ void BoardView::selectionSenteHandPoint(const Point &point)
     select_point = point;
 
     if (selectSquare) selectSquare->setClicked(false);
-    selectSquare = handBoard[Sente][point.y()];
+    selectSquare = handBoard[Sente][point.y() - 1];
     if (selectSquare) selectSquare->setClicked(true);
 
     naviClear();
@@ -240,7 +240,7 @@ void BoardView::selectionGoteHandPoint(const Point &point)
     select_point = point;
 
     if (selectSquare) selectSquare->setClicked(false);
-    selectSquare = handBoard[Gote][point.y()];
+    selectSquare = handBoard[Gote][point.y() - 1];
     if (selectSquare) selectSquare->setClicked(true);
 
     naviClear();

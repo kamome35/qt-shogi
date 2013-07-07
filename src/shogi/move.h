@@ -2,6 +2,7 @@
 #define SHOGI_MOVE_H
 
 #include "shogi.h"
+#include "board.h"
 
 namespace Shogi {
 

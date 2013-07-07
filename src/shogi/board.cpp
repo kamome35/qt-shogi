@@ -18,9 +18,6 @@ void Board::setPiece(Piece &piece)
     Q_ASSERT(piece.point().x() >= 0 && piece.point().x() <= 9);
     Q_ASSERT(piece.point().y() >= 0 && piece.point().y() <= 9);
 
-    m_pieces.append(piece);
-    player_pieces[piece.owner()].append(piece);
-
     // 盤面情報に駒を追加する。(0, 0)座標は持駒を表し駒所持者の持駒情報に追加する。
     if (piece.point() != Point(0, 0)) {
         square_piece[piece.point().x() - 1][piece.point().y() - 1] = piece;
@@ -40,9 +37,6 @@ void Board::removePiece(Piece &piece)
 {
     Piece empty_piece;
     empty_piece.setPoint(piece.point());
-
-    m_pieces.removeOne(piece);
-    player_pieces[piece.owner()].removeOne(piece);
 
     // 盤面情報に駒を追加する。(0, 0)座標は持駒を表し駒所持者の持駒情報に追加する。
     if (piece.point() != Point(0, 0)) {
@@ -67,7 +61,7 @@ void Board::movePiece(Piece piece, const Point &to)
 
     // 盤面/持駒情報から駒を削除する。
     if (piece.point() != Point(0, 0)) {
-        Q_ASSERT_X(square_piece[piece.point().x() - 1][piece.point().y() - 1].type() != PieceEmpty, "movePiece", "from hand piece nothing.");
+        Q_ASSERT_X(square_piece[piece.point().x() - 1][piece.point().y() - 1].type() != PieceEmpty, "movePiece", "from board piece nothing.");
         square_piece[piece.point().x() - 1][piece.point().y() - 1] = Piece();
     } else {
         Q_ASSERT_X(!hand_piece[piece.owner()][piece.type()].isEmpty(), "movePiece", "from hand piece nothing.");
@@ -80,21 +74,15 @@ void Board::movePiece(Piece piece, const Point &to)
         Q_ASSERT_X(to_piece.owner() != piece.owner(), "movePiece", "my piece in place already.");   // 配置先に自分の駒がある場合は取ってはいけない
         Q_ASSERT_X(to_piece.type() != PieceKing, "movePiece", "not get king piece.");                    // 玉を取ってはいけない
 
-        // 相手の所持駒リストから削除
-        player_pieces[to_piece.owner()].removeOne(to_piece);
-
         // 自分の所持駒リストおよび持駒情報に追加
         Piece get_piece = Piece(piece.owner(), frontsidePieceType(to_piece.type()));
         get_piece.setPoint(Point(0, 0));
-        player_pieces[piece.owner()].append(get_piece);
-        hand_piece[piece.owner()][piece.type()].append(get_piece);
+        hand_piece[get_piece.owner()][get_piece.type()].append(get_piece);
     }
 
     // 盤面移動先情報を反映する。
-    player_pieces[piece.owner()].removeOne(piece);
     piece.setPoint(to);
     square_piece[piece.point().x() - 1][piece.point().y() - 1] = piece;
-    player_pieces[piece.owner()].append(piece);
 
     // 種別が玉の場合は情報を更新する
     if (piece.type() == PieceKing)
@@ -108,7 +96,26 @@ Move Board::move() const
 
 PieceList Board::pieces() const
 {
-    return m_pieces;
+    PieceList pieces;
+
+    for (int x = 1; x <= BOARD_X_MAX; ++x) {
+        for (int y = 1; y <= BOARD_Y_MAX; ++y) {
+            pieces.append(square_piece[x - 1][y - 1]);
+        }
+    }
+
+    foreach (const PieceList &piece_list, hand_piece[Sente].values()) {
+        foreach (const Piece &piece, piece_list) {
+            pieces.append(piece);
+        }
+    }
+    foreach (const PieceList &piece_list, hand_piece[Gote].values()) {
+        foreach (const Piece &piece, piece_list) {
+            pieces.append(piece);
+        }
+    }
+
+    return pieces;
 }
 
 Piece Board::piece(Player player, const Point &from, PieceType piece_type) const
@@ -143,7 +150,23 @@ PieceList Board::playerPieces(Player player) const
 {
     Q_ASSERT(player == Sente || player == Gote);
 
-    return player_pieces[player];
+    PieceList player_pieces;
+
+    for (int x = 1; x <= BOARD_X_MAX; ++x) {
+        for (int y = 1; y <= BOARD_Y_MAX; ++y) {
+            const Piece &piece = square_piece[x - 1][y - 1];
+            if (piece.owner() == player)
+                player_pieces.append(piece);
+        }
+    }
+
+    foreach (const PieceList &piece_list, hand_piece[player].values()) {
+        foreach (const Piece &piece, piece_list) {
+            player_pieces.append(piece);
+        }
+    }
+
+    return player_pieces;
 }
 
 Piece Board::squarePiece(const Point &point) const
@@ -215,7 +238,7 @@ bool Board::checkmateCheck(Player player) const
     // 詰みチェックは重たいので王手の場合の詰みチェックを行う
     if (outeCheck(player)) {
         // 動かせる駒がない場合は詰み
-        if (Move(*this).movablePieces(player).isEmpty()) {
+        if (move().movablePieces(player).isEmpty()) {
             return true;    // 詰み
         }
     }

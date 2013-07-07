@@ -130,8 +130,6 @@ protected:
     PieceType frontsidePieceType(PieceType piece_type);
 
 private:
-    PieceList m_pieces;                                     /**< すべての駒情報 */
-    PieceList player_pieces[PLAYER_MAX];                    /**< プレイヤーの駒 */
     HandPieceMap hand_piece[PLAYER_MAX];                    /**< 持駒 */
     Piece square_piece[BOARD_X_MAX][BOARD_Y_MAX];           /**< 盤上の駒 */
     Piece king_piece[PLAYER_MAX];                           /**< 玉駒 */
