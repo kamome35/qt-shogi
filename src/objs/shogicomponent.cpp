@@ -28,7 +28,7 @@ void ShogiComponent::run()
         if (gameStatus() != StatusPlaying)
             break;
 
-        exec();
+        msleep(200);
     }
 
     // ゲーム終了を通知

@@ -52,7 +52,7 @@ void Human::selectionPoint(const Point &point)
         piece = component->board().squarePiece(point);
     } else {
         // X座標が0の場合は持駒から取得する
-        PieceType piece_type = (PieceType)point.y();
+        PieceType piece_type = (PieceType)(point.y());
         if (!component->board().handPieces(player, piece_type).isEmpty())
             piece = component->board().handPieces(player, piece_type).first();
     }

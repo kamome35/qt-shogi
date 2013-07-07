@@ -166,12 +166,15 @@ BoardView::BoardView(QWidget *parent) :
     }
 
     /* 持ち駒台 */
+    static const PieceType hand_piece_type[HAND_PIECE_TYPE_NUM] = {
+        PiecePawn, PieceLance, PieceKnight, PieceSilver, PieceGold, PieceRook, PieceBishop,
+    };
     // 先手
     for (int i = 0; i < HAND_PIECE_TYPE_NUM; ++i) {
         BoardViewInner::SquareItem *item = new BoardViewInner::SquareItem();
         handBoard[Sente][i] = item;
         item->setPos(BOARD_X_MAX * SquareWidth + SquareWidth, (i + 3) * SquareWidth);
-        item->setPoint(Point(0, i + 1));
+        item->setPoint(Point(0, (int)hand_piece_type[i]));
         scene->addItem(item);
         connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionSenteHandPoint(Shogi::Point)));
     }
@@ -180,7 +183,7 @@ BoardView::BoardView(QWidget *parent) :
         BoardViewInner::SquareItem *item = new BoardViewInner::SquareItem();
         handBoard[Gote][i] = item;
         item->setPos(-SquareWidth * 2, BOARD_Y_MAX * SquareWidth - SquareWidth * (i + 2));
-        item->setPoint(Point(0, i + 1));
+        item->setPoint(Point(0,(int)hand_piece_type[i]));
         scene->addItem(item);
         connect(item, SIGNAL(clickPoint(Shogi::Point)), this, SLOT(selectionGoteHandPoint(Shogi::Point)));
     }
@@ -273,16 +276,24 @@ void BoardView::boardUpdate() const
             board[x - 1][y - 1]->setPiece(piece);
         }
     }
-    for (int i = 1; i <= HAND_PIECE_TYPE_NUM; ++i) {
-        const PieceList &piece_list = b.handPieces(Sente, static_cast<PieceType>(i));
-        if (piece_list.count() > 0) {
-            handBoard[Sente][i - 1]->setPiece(piece_list.first());
+
+    static const PieceType hand_piece_type[HAND_PIECE_TYPE_NUM] = {
+        PiecePawn, PieceLance, PieceKnight, PieceSilver, PieceGold, PieceRook, PieceBishop,
+    };
+    for (int i = 0; i < HAND_PIECE_TYPE_NUM; ++i) {
+        const PieceList &piece_list = b.handPieces(Sente, hand_piece_type[i]);
+        if (!piece_list.isEmpty()) {
+            handBoard[Sente][i]->setPiece(piece_list.first());
+        } else {
+            handBoard[Sente][i]->setPiece(Piece());
         }
     }
-    for (int i = 1; i <= HAND_PIECE_TYPE_NUM; ++i) {
-        const PieceList &piece_list = b.handPieces(Gote, static_cast<PieceType>(i));
-        if (piece_list.count() > 0) {
-            handBoard[Gote][i - 1]->setPiece(piece_list.first());
+    for (int i = 0; i < HAND_PIECE_TYPE_NUM; ++i) {
+        const PieceList &piece_list = b.handPieces(Gote, hand_piece_type[i]);
+        if (!piece_list.isEmpty()) {
+            handBoard[Gote][i]->setPiece(piece_list.first());
+        } else {
+            handBoard[Gote][i]->setPiece(Piece());
         }
     }
 }
