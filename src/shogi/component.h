@@ -32,7 +32,7 @@ public:
      * @param status ゲーム状態
      * @see gameStatus
      */
-    void setGameStatus(GameStatus status);
+    virtual void setGameStatus(GameStatus status);
 
     /**
      * ゲームを開始する。

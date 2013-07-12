@@ -19,12 +19,28 @@ Shogi::Component::~Component()
 
 void Component::setGameStatus(GameStatus status)
 {
+    switch (status) {
+    case StatusToryo:
+    case StatusSennichite:
+    case StatusTimeUp:
+    case StatusIllegalMove:
+    case StatusJishogi:
+    case StatusKachi:
+    case StatusHikiwake:
+    case StatusTsumi:
+    case StatusFuzumi:
+        m_end_date_time = DateTime::currentDateTime();
+        break;
+    default:
+        break;
+    }
+
     m_status = status;
 }
 
 void Component::gameStartInit(const Time &time_limit, const Time &time_byoyomi)
 {
-    m_status = StatusPlaying;
+    setGameStatus(StatusPlaying);
     m_turn = Sente;
     m_index = 0;
     m_start_date_time = DateTime::currentDateTime();
@@ -36,7 +52,7 @@ void Component::gameStartInit(const Time &time_limit, const Time &time_byoyomi)
 
 void Component::gameSuspend()
 {
-    m_status = StatusChudan;
+    setGameStatus(StatusChudan);
     m_time_conter = Time();
 }
 
@@ -50,7 +66,7 @@ void Component::gameRestart()
     for (int i = 0; m_index < m_board_list.count(); ++i ) {
         m_board_list.removeLast();
     }
-    m_status = StatusPlaying;
+    setGameStatus(StatusPlaying);
     m_time_conter.start();
 }
 
@@ -102,17 +118,18 @@ bool Component::movePiece(Player player, const Point &from, const Point &to, Pie
 */
 
     // 持ち時間を更新して、持ち時間が無くなった場合は、ゲームを終了する
-    const int sec = m_time_conter.restart();
-    m_time_limit[player].addSecs(-sec);
-    if (Time().secsTo(m_time_limit[player]) < 0) {
-        m_status = StatusTimeUp;
+    const int sec = (m_time_conter.restart() + 999) / 1000;
+    m_time_limit[player] =  m_time_limit[player].addSecs(-sec);
+    m_time_limit[player] = m_time_limit[player] < m_time_limit_initial ? m_time_limit[player] : Time(0, 0);
+    if (Time().secsTo(m_time_limit[player]) <= 0) {
+        setGameStatus(StatusTimeUp);
         m_record_list << Record(player, m_status);
         return false;
     }
 
     // 移動可能な座標か調べる
     if (!m_board.move().canMove(player, from, to, piece_type)) {
-        m_status = StatusIllegalMove;
+        setGameStatus(StatusIllegalMove);
         m_record_list << Record(player, m_status);
         return false;
     }
@@ -131,7 +148,7 @@ bool Component::movePiece(Player player, const Point &from, const Point &to, Pie
 
     // 詰みチェック
     if (m_board.checkmateCheck(m_turn)) {
-        m_status = StatusTsumi;
+        setGameStatus(StatusTsumi);
         m_record_list << Record(m_turn, m_status);
     }
 

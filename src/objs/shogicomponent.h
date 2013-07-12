@@ -20,6 +20,15 @@ public:
     ShogiComponent(QObject *parent = 0);
     ~ShogiComponent();
 
+
+    /**
+     * ゲームの状態を設定する
+     *
+     * @param status ゲーム状態
+     * @see gameStatus
+     */
+    void setGameStatus(Shogi::GameStatus status);
+
 public slots:
     /**
      * 駒を移動する
@@ -33,6 +42,8 @@ public slots:
     bool movePiece(Shogi::Player turn, const Shogi::Point &from, const Shogi::Point &to, Shogi::PieceType piece_type);
 
 signals:
+    void changeGameStatus(Shogi::GameStatus game_status);
+
     /**
      * ゲーム開始時に出力される
      */
@@ -59,8 +70,17 @@ signals:
      */
     void recordAdded(const Shogi::Record &shogi_recoerd);
 
+    /**
+     * 手番が変更された時に出力される
+     *
+     * @param turn
+     */
+    void changeTurn(Shogi::Player turn);
+
 protected:
     void run();
+
+private:
 };
 
 #endif // OBJS_SHOGICOMPONENT_H

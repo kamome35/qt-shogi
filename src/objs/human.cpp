@@ -37,7 +37,7 @@ void Human::run()
             thinking = true;
         }
 
-        //sleep(1);
+        msleep(100);
     }
 }
 

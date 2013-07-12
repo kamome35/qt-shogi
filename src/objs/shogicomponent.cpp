@@ -15,8 +15,27 @@ ShogiComponent::~ShogiComponent()
 {
 }
 
+void ShogiComponent::setGameStatus(GameStatus status)
+{
+    Shogi::Component::setGameStatus(status);
+    emit changeGameStatus(status);
+}
+
+bool ShogiComponent::movePiece(Player turn, const Point &from, const Point &to, PieceType piece_type)
+{
+    // 駒を移動する
+    if (Component::movePiece(turn, from, to, piece_type)) {
+        emit pieceMoved(from, to, piece_type);
+        emit changeTurn(this->turn());
+        return true;
+    } else {
+        return false;
+    }
+}
+
 void ShogiComponent::run()
 {
+    qRegisterMetaType<Shogi::Player>("Shogi::Player");
     qRegisterMetaType<Shogi::Point>("Shogi::Point");
     qRegisterMetaType<Shogi::PieceType>("Shogi::PieceType");
 
@@ -28,20 +47,9 @@ void ShogiComponent::run()
         if (gameStatus() != StatusPlaying)
             break;
 
-        msleep(200);
+        msleep(100);
     }
 
     // ゲーム終了を通知
     emit gameEnd();
-}
-
-bool ShogiComponent::movePiece(Player turn, const Point &from, const Point &to, PieceType piece_type)
-{
-    // 駒を移動する
-    if (Component::movePiece(turn, from, to, piece_type)) {
-        emit pieceMoved(from, to, piece_type);
-        return true;
-    } else {
-        return false;
-    }
 }
