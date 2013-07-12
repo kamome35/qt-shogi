@@ -243,6 +243,14 @@ bool Board::checkmateCheck(Player player) const
         }
     }
 
+    // 玉のみの場合(駒が１つしかない場合)、駒が移動できない場合は終了
+    if (playerPieces(player).count() == 1) {
+        if (move().movablePieces(player).isEmpty()) {
+            return true;    // 詰み
+        }
+    }
+
+
     return false; // 詰みではない
 }
 
