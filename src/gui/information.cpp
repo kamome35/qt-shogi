@@ -44,7 +44,6 @@ void Information::setShogiComponent(const ShogiComponent *component)
     connect(component, SIGNAL(gameEnd()), this, SLOT(setGameStatusItem()));
     connect(component, SIGNAL(changeGameStatus(Shogi::GameStatus)), this, SLOT(setGameStatusItem(Shogi::GameStatus)));
     connect(component, SIGNAL(changeTurn(Shogi::Player)), this, SLOT(changedTurn()));
-
 }
 
 void Information::updateNowDateTime()
