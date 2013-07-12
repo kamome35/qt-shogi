@@ -24,7 +24,7 @@ public:
     explicit Human(Shogi::Player player, QObject *parent = 0);
     virtual ~Human();
 
-    void setShogiComponent(ShogiComponent *shogi_component);
+    virtual void setShogiComponent(ShogiComponent *shogi_component);
 
 protected:
     virtual void run();

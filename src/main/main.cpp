@@ -15,6 +15,11 @@ int main(int argc, char *argv[])
     QTextCodec::setCodecForTr(QTextCodec::codecForName("UTF-8"));
     QApplication a(argc, argv);
 
+    qRegisterMetaType<Shogi::Player>("Shogi::Player");
+    qRegisterMetaType<Shogi::Point>("Shogi::Point");
+    qRegisterMetaType<Shogi::PieceType>("Shogi::PieceType");
+    qRegisterMetaType<Shogi::GameStatus>("Shogi::GameStatus");
+
 #ifndef SHOGI_NOT_GUI
     MainWindow w;
     w.show();

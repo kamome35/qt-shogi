@@ -16,10 +16,10 @@ class GameStartDialog : public QDialog
 public:
     explicit GameStartDialog(QWidget *parent = 0);
     ~GameStartDialog();
-    Shogi::String sentePlayerName() const;
-    Shogi::String gotePlayerName() const;
+    Shogi::String playerName(Shogi::Player player) const;
+    Shogi::HumanType humanType(Shogi::Player player) const;
     Shogi::Time timeLimit() const;
-    
+
 private:
     Ui::GameStartDialog *ui;
 };

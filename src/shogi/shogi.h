@@ -33,6 +33,15 @@ enum Player {
 };
 
 /**
+ * 指し手の種別
+ */
+enum HumanType {
+    HumanPlayer,
+    HumanComputer,
+    HumanNetwork
+};
+
+/**
  * 駒種別
  */
 enum PieceType {

@@ -24,8 +24,7 @@ public slots:
 
 private:
     ShogiComponent *shogi_component;
-    Human *sente;
-    Human *gote;
+    Human *player[Shogi::PLAYER_MAX];
     BoardView *board_view;
     Information *info;
     RecordWidget *record;

@@ -8,15 +8,14 @@
 
 #include <shogi/shogi.h>
 #include <objs/human.h>
+#include <objs/computerhuman.h>
 
 
 using namespace Shogi;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    shogi_component(0),
-    sente(0),
-    gote(0)
+    shogi_component(0)
 {
     /* 盤 */
     board_view = new BoardView(this);
@@ -60,8 +59,6 @@ MainWindow::~MainWindow()
 void MainWindow::setup()
 {
     shogi_component = new ShogiComponent(this);
-    sente = new Human(Sente, this);
-    gote = new Human(Gote, this);
 
     struct PieceInitList {
         Player owner;
@@ -121,25 +118,32 @@ void MainWindow::setup()
         shogi_component->setPiece(piece);
     }
 
+    shogi_component->setPlayerName(Sente, gamestartdialog->playerName(Sente));
+    shogi_component->setPlayerName(Gote, gamestartdialog->playerName(Gote));
     shogi_component->gameStartInit(gamestartdialog->timeLimit());
-    sente->setShogiComponent(shogi_component);
-    gote->setShogiComponent(shogi_component);
+    player[Sente] = gamestartdialog->humanType(Sente) == HumanPlayer ?
+                new Human(Sente, this) : new ComputerHuman(Sente, this);
+    player[Gote] = gamestartdialog->humanType(Gote) == HumanPlayer ?
+                new Human(Gote, this) : new ComputerHuman(Gote, this);
+    player[Sente]->setShogiComponent(shogi_component);
+    player[Gote]->setShogiComponent(shogi_component);
     info->setShogiComponent(shogi_component);
     board_view->setShogiComponent(shogi_component);
-    shogi_component->start();
-    sente->start();
-    gote->start();
 
-    connect(board_view, SIGNAL(selectedBoardPoint(Shogi::Point)), sente, SLOT(selectionPoint(Shogi::Point)));
-    connect(board_view, SIGNAL(selectedSenteHandPoint(Shogi::Point)), sente, SLOT(selectionPoint(Shogi::Point)));
+    connect(board_view, SIGNAL(selectedBoardPoint(Shogi::Point)), player[Sente], SLOT(selectionPoint(Shogi::Point)));
+    connect(board_view, SIGNAL(selectedSenteHandPoint(Shogi::Point)), player[Sente], SLOT(selectionPoint(Shogi::Point)));
 
-    connect(board_view, SIGNAL(selectedBoardPoint(Shogi::Point)), gote, SLOT(selectionPoint(Shogi::Point)));
-    connect(board_view, SIGNAL(selectedGoteHandPoint(Shogi::Point)), gote, SLOT(selectionPoint(Shogi::Point)));
+    connect(board_view, SIGNAL(selectedBoardPoint(Shogi::Point)), player[Gote], SLOT(selectionPoint(Shogi::Point)));
+    connect(board_view, SIGNAL(selectedGoteHandPoint(Shogi::Point)), player[Gote], SLOT(selectionPoint(Shogi::Point)));
 
-    connect(sente, SIGNAL(selectPiece(const Shogi::Piece)), board_view, SLOT(selectedPiece(const Shogi::Piece)));
-    connect(gote, SIGNAL(selectPiece(const Shogi::Piece)), board_view, SLOT(selectedPiece(const Shogi::Piece)));
+    connect(player[Sente], SIGNAL(selectPiece(const Shogi::Piece)), board_view, SLOT(selectedPiece(const Shogi::Piece)));
+    connect(player[Gote], SIGNAL(selectPiece(const Shogi::Piece)), board_view, SLOT(selectedPiece(const Shogi::Piece)));
 
     /* 棋譜リストと同期 */
     connect(shogi_component, SIGNAL(recordAdded(Shogi::Record)), record, SLOT(recordUpdate(Shogi::Record)));
     connect(shogi_component, SIGNAL(pieceMoved(Shogi::Point,Shogi::Point,Shogi::PieceType)), board_view, SLOT(boardUpdate(Shogi::Point,Shogi::Point,Shogi::PieceType)));
+
+    shogi_component->start();
+    player[Sente]->start();
+    player[Gote]->start();
 }

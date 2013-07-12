@@ -35,10 +35,6 @@ bool ShogiComponent::movePiece(Player turn, const Point &from, const Point &to, 
 
 void ShogiComponent::run()
 {
-    qRegisterMetaType<Shogi::Player>("Shogi::Player");
-    qRegisterMetaType<Shogi::Point>("Shogi::Point");
-    qRegisterMetaType<Shogi::PieceType>("Shogi::PieceType");
-
     // ゲーム開始を通知
     emit gameStart();
 

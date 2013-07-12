@@ -14,14 +14,20 @@ GameStartDialog::~GameStartDialog()
     delete ui;
 }
 
-Shogi::String GameStartDialog::sentePlayerName() const
+Shogi::String GameStartDialog::playerName(Shogi::Player player) const
 {
-    return !ui->sentePlayerName->text().isEmpty() ? ui->sentePlayerName->text() : tr("No Name");
+    if (player == Shogi::Sente)
+        return !ui->sentePlayerName->text().isEmpty() ? ui->sentePlayerName->text() : tr("No Name");
+    else
+        return !ui->gotePlayerName->text().isEmpty() ? ui->gotePlayerName->text() : tr("No Name");
 }
 
-Shogi::String GameStartDialog::gotePlayerName() const
+Shogi::HumanType GameStartDialog::humanType(Shogi::Player player) const
 {
-    return !ui->gotePlayerName->text().isEmpty() ? ui->gotePlayerName->text() : tr("No Name");
+    if (player == Shogi::Sente)
+        return static_cast<Shogi::HumanType>(ui->senteHumanType->currentIndex());
+    else
+        return static_cast<Shogi::HumanType>(ui->goteHumanType->currentIndex());
 }
 
 Shogi::Time GameStartDialog::timeLimit() const
